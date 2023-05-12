@@ -6,7 +6,7 @@ authors = ["cbarne02 <christopher.barnett@tufts.edu>"]
 packages = [{include = "starfish_api_client"}]
 
 [tool.poetry.dependencies]
-python = ">=3.9"
+python = ">=3.9,<4.0"
 requests = "^2.29.0"
 
 
