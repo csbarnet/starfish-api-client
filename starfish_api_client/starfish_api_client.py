@@ -1,12 +1,12 @@
 import requests
 import os
-
+import urllib.parse
 
 
 class StarfishAPIClient:
 
-    def __init__(self, token=None):
-        self.url = 'https://starfish.cluster.tufts.edu/api'
+    def __init__(self, token=None, url='https://starfish.cluster.tufts.edu/api'):
+        self.url = url
         self.token = token
 
     def get_volume_capacity(self, include_titan=False):
@@ -20,6 +20,8 @@ class StarfishAPIClient:
         return self._query(depth=0)
 
     def subfolder_size_query(self, vol, path=''):
+        # the path needs to urlencode any forward slashes
+        path = urllib.parse.quote(path, safe='')
         return self._query(f'query/{vol}:{path}', depth=1)
 
     def add_tag(self, vol_path, new_tag):
