@@ -17,12 +17,12 @@ class StarfishAPIClient:
             return [i for i in res if 'titan' not in i['vol']]
 
     def volume_size_query(self):
-        return self._query(depth=0)
+        return self._query()
 
     def subfolder_size_query(self, vol, path=''):
         # the path needs to urlencode any forward slashes
         path = urllib.parse.quote(path, safe='')
-        return self._query(f'query/{vol}:{path}', depth=1)
+        return self._query(f'query/{vol}:{path}', query_terms={'depth': 1})
 
     def add_tag(self, vol_path, new_tag):
         """
@@ -62,13 +62,21 @@ class StarfishAPIClient:
                                        {"paths": vol_path, "tags": tag},
                                        {'Content-Type': 'application/vnd.sf.tag.purge+json'})
 
-    def _query(self, endpoint='query', depth=0):
+    def _query(self, endpoint='query', query_terms=None):
         cols = ['aggrs', 'rec_aggrs', 'rec_aggrs.mtime', 'username', 'groupname', 'gid', 'tags_explicit',
                 'tags_inherited', 'nlinks', 'errors', 'type_hum', 'valid_from', 'valid_to', 'cost',
                 'total_capacity', 'logical_size', 'physical_size', 'physical_nlinks_size',
                 'size_nlinks', 'entries_count', 'mode', 'mode_hum', 'mount_path']
+        if query_terms is None:
+            query_terms = {}
 
-        params = {'query': 'type=d depth=' + str(depth),
+        query_terms.update({
+                'type': 'd'
+            })
+        query = []
+        for k, v in query_terms:
+            query.append(f'{k}={v}')
+        params = {'query': ' '.join(query),
                   'limit': 15000,
                   'sort_by': 'groupname',
                   'format': ' '.join(cols)}
