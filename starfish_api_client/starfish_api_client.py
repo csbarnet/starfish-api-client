@@ -20,9 +20,13 @@ class StarfishAPIClient:
         return self._query()
 
     def subfolder_size_query(self, vol, path=''):
+        return self.query(vol, path, query_terms={'depth': 1})
+
+    def query(self, vol, path='', query_terms=None):
         # the path needs to urlencode any forward slashes
         path = urllib.parse.quote(path, safe='')
-        return self._query(f'query/{vol}:{path}', query_terms={'depth': 1})
+        query_terms = query_terms if query_terms is not None else {}
+        return self._query(f'query/{vol}:{path}', query_terms=query_terms)
 
     def add_tag(self, vol_path, new_tag):
         """
