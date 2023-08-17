@@ -24,15 +24,4 @@ class StarfishTagger:
     def filter_filenames(filenames: list, blacklist: list):
         return [f for f in filenames if (f.startswith('.') or f.startswith('systemd') or f == 'mmfs' or f in blacklist)]
 
-'''
-def add_all_tags():
-    sf = StarfishAPIClient(token=TOKEN)
-    tagger = StarfishTagger(sf)
-    tagger.add_reporting_tags('kappa')
-    tagger.add_reporting_tags('kappa', path='archive/migrate', fn_attr='full_path')
-    tagger.add_reporting_tags('projects')
-    tagger.add_reporting_tags('other')
-    # skip tagging any directories that have names that are lowercase letters. these are old home directories and nothing should be added here
-    tagger.add_reporting_tags('homedir', blacklist=[chr(i) for i in range(ord("a"), ord("z") + 1)])
-'''
 
