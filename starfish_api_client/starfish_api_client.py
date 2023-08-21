@@ -78,7 +78,7 @@ class StarfishAPIClient:
                 'type': 'd'
             })
         query = []
-        for k, v in query_terms:
+        for k, v in query_terms.items():
             query.append(f'{k}={v}')
         params = {'query': ' '.join(query),
                   'limit': 15000,
