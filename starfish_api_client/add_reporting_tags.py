@@ -1,7 +1,4 @@
 from starfish_api_client import StarfishAPIClient
-import logging
-
-LOG = logging.getLogger(__name__)
 
 
 class StarfishTagger:
@@ -12,7 +9,6 @@ class StarfishTagger:
         filenames = StarfishTagger.get_untagged_filenames(results, fn_attr)
         filenames = StarfishTagger.filter_filenames(filenames, blacklist)
         for f in filenames:
-            LOG.info(f'adding reporting tag for {f}...')
             self.sf.add_tag(f"{tag}:{f}", f"Reporting:{f}")
 
     @staticmethod
