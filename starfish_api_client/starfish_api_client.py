@@ -120,10 +120,10 @@ class StarfishAPIClient:
             query_id = None
             if 'SF-Query-Id' in r.headers:
                 query_id = r.headers.get('SF-Query-Id')
-            return query_id, True, r.json()
+            return {'query_id': query_id, 'complete': True, 'results': r.json()}
         elif r.status_code == 202:
             query_id = r.json()['query_id']
-            return query_id, False, None
+            return {'query_id': query_id, 'complete': False, 'results': None}
 
     def _get_headers(self, additional_headers=None):
         headers = {
