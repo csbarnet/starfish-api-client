@@ -94,7 +94,7 @@ class StarfishAPIClient:
                                        {"paths": vol_path, "tags": tag},
                                        {'Content-Type': 'application/vnd.sf.tag.purge+json'})
 
-    def _query(self, volumes_paths='', query_terms=None, async_after=5):
+    def _query(self, volumes_paths=None, query_terms=None, async_after=5):
         cols = ['aggrs', 'rec_aggrs', 'rec_aggrs.mtime', 'username', 'groupname', 'gid', 'tags_explicit',
                 'tags_inherited', 'nlinks', 'errors', 'type_hum', 'valid_from', 'valid_to', 'cost',
                 'total_capacity', 'logical_size', 'physical_size', 'physical_nlinks_size',
@@ -109,11 +109,13 @@ class StarfishAPIClient:
         for k, v in query_terms.items():
             query.append(f'{k}={v}')
         body = {'queries': [' '.join(query)],
-                'volumes_and_paths': volumes_paths,
                 'limit': 15000,
                 'sort_by': 'groupname',
                 'async_after_sec': async_after,
                 'format': ' '.join(cols)}
+        if volumes_paths is not None:
+            body['volumes_and_paths'] = volumes_paths
+
         r = self._send_post_request('async/query/', body)
         if r.status_code == 200:
             # return query result
