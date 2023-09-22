@@ -16,7 +16,7 @@ class StarfishAPIClient:
             return [i for i in res if 'titan' not in i['vol']]
 
     def request_volumes_query(self):
-        return self._query()
+        return self._query(query_terms={'depth': 0})
 
     def request_subfolder_query(self, vol, path=''):
         return self.request_query(vol, path, query_terms={'depth': 1})
