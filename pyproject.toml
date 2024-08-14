@@ -1,15 +1,15 @@
 [tool.poetry]
 name = "starfish-api-client"
 version = "0.1.0"
-description = ""
-authors = ["cbarne02 <christopher.barnett@tufts.edu>"]
-packages = [{include = "starfish_api_client"}]
-
-[tool.poetry.dependencies]
-python = ">=3.9,<4.0"
-requests = "^2.29.0"
-
+description = "client for the starfish api"
+authors = [{name="Chris Barnett", email="Christopher.Barnett@tufts.edu"}]
+dependencies = [
+    "requests>=2.32.3"
+]
+requires-python = ">= 3.11"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools >= 61.0",
+]
+build-backend = "setuptools.build_meta"
