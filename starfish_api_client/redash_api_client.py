@@ -3,12 +3,35 @@ import os
 
 
 class RedashAPIClient:
-    def __init__(self, starfish_host, api_key):
-        self.redash_url = f'https://{starfish_host}/redash/api/'
-        self.api_key = api_key
-        self.headers = {'Authorization': f'Key {api_key}'}
+    def __init__(self, starfish_host, query_id, api_key):
+        self.url = f'https://{starfish_host}/redash/api/'
+        self.token = api_key
+        self.query_id = query_id
+    
+    def query(self):
+        """submit a query and return a json of the results."""
+        return self._send_get_request(f'queries/{self.query_id}/results')
 
-    def _download_file(self, url: str, local_filename: str, params: dict = None, headers: dict = None, chunk_size: int = 524_288):
+    def download_query_results(self, local_filename: str):
+        """
+        get the results of a query from redash
+        :param query_id: id of the
+        :return:
+        """
+        self._download_file(f'queries/{self.query_id}/results.csv', f'{local_filename}.csv')
+    
+    def _send_get_request(self, endpoint, params=None):
+        headers = {
+            'Accept': 'application/json',
+            'Authorization': f'Key {self.token}'
+        }
+        r = requests.get(os.path.join(self.url, endpoint),
+                         params=params if not None else {},
+                         headers=headers)
+        r.raise_for_status()
+        return r.json()
+    
+    def _download_file(self, endpoint: str, local_filename: str, chunk_size: int = 524_288):
         """
         downloads a file from a url, with options for setting headers, parameters, and chunk size to tune performance
         :param url: remote file location
@@ -18,18 +41,11 @@ class RedashAPIClient:
         :param chunk_size:
         :return:
         """
-
-        with requests.get(url, headers=headers, params=params, stream=True) as r:
+        headers = {
+            'Authorization': f'Key {self.token}'
+        }
+        with requests.get(os.path.join(self.url, endpoint), headers=headers, stream=True) as r:
             r.raise_for_status()
             with open(local_filename, 'wb') as f:
                 for chunk in r.iter_content(chunk_size=chunk_size):
                     f.write(chunk)
-    
-    def download_query_results(self, query_id: int, local_filename: str):
-        """
-        get the results of a query from redash
-        :param query_id: id of the
-        :return:
-        """
-        endpoint = f'queries/{query_id}/results.csv'
-        self._download_file(os.path.join(self.redash_url, endpoint), f'{query_id}.csv', headers=self.headers)
