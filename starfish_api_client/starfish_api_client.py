@@ -4,7 +4,7 @@ import os
 
 class StarfishAPIClient:
 
-    def __init__(self, token=None, url='https://starfish.cluster.tufts.edu/api'):
+    def __init__(self, token=None, url=None):
         self.url = url
         self.token = token
 

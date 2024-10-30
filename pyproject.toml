@@ -1,7 +1,8 @@
-[tool.poetry]
+[project]
 name = "starfish-api-client"
 version = "0.1.0"
 description = "client for the starfish api"
+readme = "README.md"
 authors = [{name="Chris Barnett", email="Christopher.Barnett@tufts.edu"}]
 dependencies = [
     "requests>=2.32.3"
