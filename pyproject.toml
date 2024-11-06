@@ -5,7 +5,7 @@ description = "client for the starfish api"
 readme = "README.md"
 authors = [{name="Chris Barnett", email="Christopher.Barnett@tufts.edu"}]
 dependencies = [
-    "requests>=2.32.3"
+    "requests>=2.31.0"
 ]
 requires-python = ">= 3.11"
 

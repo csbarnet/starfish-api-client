@@ -1,4 +1,5 @@
 import os
+import time
 import requests
 
 from starfish_api_client.utils import record_process
@@ -116,19 +117,20 @@ class StarfishAPIClient:
         query_terms = query_terms if query_terms is not None else {}
         return self.query(f'{vol}:{path}', query_terms=query_terms)
     
-    def query(self, volumes_paths=None, query_terms=None, async_after=5, poll_interval=5, timeout=300):
+    def query(self, volumes_paths=None, query_terms=None, async_after=5, wait= True, poll_interval=5, timeout=300):
         cols = ['aggrs', 'rec_aggrs', 'rec_aggrs.mtime', 'username', 'groupname', 'gid', 'tags_explicit',
                 'tags_inherited', 'nlinks', 'errors', 'type_hum', 'valid_from', 'valid_to', 'cost',
                 'total_capacity', 'logical_size', 'physical_size', 'physical_nlinks_size',
                 'size_nlinks', 'entries_count', 'mode', 'mode_hum', 'mount_path']
         response =  self._request_query(volumes_paths, query_terms, async_after)
-        if response['complete']:
+        if not wait or response['complete']:
             sync_result = response['results']
             if isinstance(sync_result, dict) and 'error' in sync_result:
                 raise ValueError(f'Error in starfish result:\n{sync_result}')
             return sync_result
         query_id = response['query_id']
-        for _ in range(timeout//poll_interval):
+        for _ in range(poll_interval, timeout, poll_interval):
+            time.sleep(poll_interval)
             if self.status_query(query_id):
                 query_result = self.download_query_result(query_id)
                 if isinstance(query_result, dict) and 'error' in query_result:
